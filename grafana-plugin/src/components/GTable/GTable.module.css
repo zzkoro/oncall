@@ -2,10 +2,23 @@
   width: 100%;
 }
 
+.table {
+  transition: opacity 0.5s;
+}
+
 .pagination {
   margin-top: 20px;
 }
 
 .checkbox {
   display: inline-flex;
+}
+
+.loading-state {
+  opacity: 40%;
+}
+
+.loading-row-state {
+  background-color: crimson;
+  width: 100%;
 }

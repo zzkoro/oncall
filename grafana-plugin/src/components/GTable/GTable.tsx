@@ -20,6 +20,7 @@ export interface Props<RecordType = unknown> extends TableProps<RecordType> {
     selectedRowKeys: string[];
     onChange: (selectedRowKeys: string[]) => void;
   };
+  // rowClassName?: (item: RecordType) => string;
   expandable?: {
     expandedRowKeys: string[];
     expandedRowRender: (item: any) => React.ReactNode;
@@ -38,6 +39,7 @@ const GTable: FC<Props> = (props) => {
     pagination,
     loading,
     rowSelection,
+    // rowClassName,
     rowKey,
     expandable,
     ...restProps
@@ -150,7 +152,7 @@ const GTable: FC<Props> = (props) => {
       <Table
         expandable={expandable}
         rowKey={rowKey}
-        className={cx('filter-table', className)}
+        className={cx('filter-table', className, 'table', { 'loading-state': loading })}
         columns={columns}
         data={data}
         {...restProps}

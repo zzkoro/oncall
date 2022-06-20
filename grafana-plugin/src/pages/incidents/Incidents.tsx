@@ -6,6 +6,7 @@ import { Button, Icon, Tooltip, VerticalGroup, LoadingPlaceholder, HorizontalGro
 import { capitalCase } from 'change-case';
 import cn from 'classnames/bind';
 import { get } from 'lodash-es';
+import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import Emoji from 'react-emoji-render';
@@ -37,15 +38,19 @@ const cx = cn.bind(styles);
 
 const ITEMS_PER_PAGE = 50;
 
-function withSkeleton(fn: (alert: AlertType) => ReactElement | ReactElement[]) {
+function withEmpty(fn: (alert: AlertType) => ReactElement | ReactElement[]) {
   return (alert: AlertType) => {
     if (alert.short) {
-      return <LoadingPlaceholder text={''} />;
+      return null;
     }
 
     return fn(alert);
   };
 }
+
+const EmptyRowComponent = (alert: AlertType) => {
+  return <div className={cx('empty-row')}>{alert.inside_organization_number}</div>;
+};
 
 interface IncidentsPageProps extends WithStoreProps, AppRootProps {}
 
@@ -250,49 +255,49 @@ class Incidents extends React.Component<IncidentsPageProps, IncidentsPageState> 
         width: '5%',
         title: 'Status',
         key: 'time',
-        render: withSkeleton(this.renderStatus),
+        render: withEmpty(this.renderStatus),
       },
       {
         width: '10%',
         title: 'ID',
         key: 'id',
-        render: withSkeleton(this.renderId),
+        render: this.renderId,
       },
 
       {
         width: '20%',
         title: 'Title',
         key: 'title',
-        render: withSkeleton(this.renderTitle),
+        render: withEmpty(this.renderTitle),
       },
       {
         width: '10%',
         title: 'Alerts',
         key: 'alerts',
-        render: withSkeleton(this.renderAlertsCounter),
+        render: withEmpty(this.renderAlertsCounter),
       },
       {
         width: '15%',
         title: 'Source',
         key: 'source',
-        render: withSkeleton(this.renderSource),
+        render: withEmpty(this.renderSource),
       },
       {
         width: '10%',
         title: 'Created',
         key: 'created',
-        render: withSkeleton(this.renderStartedAt),
+        render: withEmpty(this.renderStartedAt),
       },
       {
         width: '15%',
         title: 'Users',
         key: 'users',
-        render: withSkeleton(renderRelatedUsers),
+        render: withEmpty(renderRelatedUsers),
       },
       {
         width: '15%',
         key: 'action',
-        render: withSkeleton(this.renderActionButtons),
+        render: withEmpty(this.renderActionButtons),
       },
     ];
 
@@ -302,14 +307,30 @@ class Incidents extends React.Component<IncidentsPageProps, IncidentsPageState> 
       (results && results.some((alert: AlertType) => alert.undoAction)) || Object.keys(affectedRows).length
     );
 
+    const TableLoading = (
+      <div className={cx('incidents-table-loading')}>
+        <Icon name="list-ul" size="lg" />
+        Loading incidents list...
+      </div>
+    );
+
     return (
       <div className={cx('root')}>
         {this.renderBulkActions()}
         <GTable
-          emptyText={alertGroupsLoading ? 'Loading...' : 'No alert groups found'}
+          emptyText={alertGroupsLoading ? TableLoading : 'No alert groups found'}
           loading={alertGroupsLoading}
           className={cx('incidents-table')}
           rowSelection={{ selectedRowKeys: selectedIncidentIds, onChange: this.handleSelectedIncidentIdsChange }}
+          rowClassName={(alert: AlertType) => {
+            if (alert.short) {
+              console.log('ALERT', toJS(alert));
+              console.log('BLA BLA BLA');
+              return cx('loading-row-state');
+            }
+            // return cx('loading-row-state');
+          }}
+          // rowClassName={cx('loading-row-state')}
           rowKey="pk"
           /*title={() => (
             <Text.Title className={cx('users-title')} level={3}>
@@ -334,7 +355,15 @@ class Incidents extends React.Component<IncidentsPageProps, IncidentsPageState> 
   };
 
   renderId(record: AlertType) {
-    return <Text type="secondary">#{record.inside_organization_number}</Text>;
+    record.short = true;
+    return {
+      children: record.short ? (
+        EmptyRowComponent(record)
+      ) : (
+        <Text type="secondary">#{record.inside_organization_number}</Text>
+      ),
+      props: { colSpan: record.short && 9 },
+    };
   }
 
   renderTitle = (record: AlertType) => {

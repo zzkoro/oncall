@@ -34,3 +34,29 @@
   height: 24px;
   margin-right: 0;
 }
+
+.incidents-table-loading {
+  width: 100%;
+  margin-top: 200px;
+  margin-bottom: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-row {
+  width: 100%;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: linear-gradient(to right, var(--primary-background) 8%, var(--secondary-background) 18%, var(--disabled-button-color) 33%);
+  height: 36px;
+}
+
+.loading-row-state {
+  opacity: 40%;
+  width: 100%;
+}
