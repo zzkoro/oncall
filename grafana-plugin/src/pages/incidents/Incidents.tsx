@@ -49,7 +49,11 @@ function withEmpty(fn: (alert: AlertType) => ReactElement | ReactElement[]) {
 }
 
 const EmptyRowComponent = (alert: AlertType) => {
-  return <div className={cx('empty-row')}>{alert.inside_organization_number}</div>;
+  return (
+    <div className={cx('empty-row')}>
+      <div className={cx('static-empty-row')}>{alert.inside_organization_number}</div>
+    </div>
+  );
 };
 
 interface IncidentsPageProps extends WithStoreProps, AppRootProps {}
