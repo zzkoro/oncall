@@ -241,7 +241,7 @@ class AlertGroupView(
                     # We just return dummy data.
                     # Cache is not launched because after skip_slow_rendering request should come usual one
                     # which will start caching
-                    data.append({"id": alert_group.public_primary_key, "short": True})
+                    data.append({"pk": alert_group.public_primary_key, "short": True})
                 else:
                     # Synchronously cache and return. It could be slow.
                     alert_group.cache_for_web(alert_group.channel.organization)
