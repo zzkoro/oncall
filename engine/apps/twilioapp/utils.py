@@ -24,7 +24,7 @@ def get_gather_url():
 
 
 def get_gather_message():
-    return "Press 1 to acknowledge, 2 to resolve, 3 to silence to 30 minutes"
+    return "확인은 1번, 해결함은 2번, 30분까지 무통지는 3번을 누르세요."
 
 
 def process_call_data(call_sid, digit):

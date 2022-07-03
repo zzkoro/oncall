@@ -125,9 +125,9 @@ class TwilioClient:
             twiml_query = urllib.parse.quote(
                 (
                     f"<Response>"
-                    f"<Say>{start_message}</Say>"
+                    f'<Say language="ko-KR">{start_message}</Say>'
                     f'<Gather numDigits="1" action="{get_gather_url()}" method="POST">'
-                    f"<Say>{get_gather_message()}</Say>"
+                    f'<Say language="ko-KR">{get_gather_message()}</Say>'
                     f"</Gather>"
                     f"</Response>"
                 ),
